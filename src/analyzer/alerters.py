@@ -62,6 +62,17 @@ def alert_hipchat(alert, metric):
     for room in rooms:
         hipster.method('rooms/message', method='POST', parameters={'room_id': room, 'from': 'Skyline', 'color': settings.HIPCHAT_OPTS['color'], 'message': 'Anomaly: <a href="%s">%s</a> : %s' % (link, metric[1], metric[0])})
 
+def alert_irccat(alert, metric):
+    import socket
+    HOST = settings.IRCCAT_OPTS['host']
+    PORT = settings.IRCCAT_OPTS['port']
+    CHANNEL = settings.IRCCAT_OPTS['channel']
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((HOST, PORT))
+    message = '#ele-test skyline anomaly: https://graphite.cm.k1k.me/render?width=588&from=-1hour&until=-&height=308&target=%s' % (metric[1])
+    s.send(message)
+    s.close()
+
 
 def trigger_alert(alert, metric):
 
