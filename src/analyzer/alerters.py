@@ -74,10 +74,11 @@ def alert_irccat(alert, metric):
     s.close()
 
 def alert_nsca(alert, metric):
-    import shlex, subprocess
+    import subprocess
     HOST = settings.NSCA_OPTS['host']
+    GRAPHITE_HOST_URL = settings.NSCA_OPTS['graphite_host_url']
     hname,branch,mname = metric[1].split(".",2)
-    link = 'https://graphite.cm.k1k.me/render?from=-1hour&target=%s' % (metric[1])
+    link = '%s/render?from=-1hour&target=%s' % (graphite_host_url, metric[1])
     message = '%s,%s,1,Telescope Rate Change Detected:%s\n' % (hname, mname, link)
     p = subprocess.Popen(['send_nsca','-H', HOST, '-to', '30', '-c', '/etc/send_nsca.cfg','-d', ','],stdin=subprocess.PIPE)
     p.communicate(input = message)
